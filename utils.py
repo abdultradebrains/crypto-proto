@@ -27,7 +27,7 @@ def render_graph(df,interval):
     df['time'] = pd.to_datetime(df['time'])
     df = df.sort_values('time')
     df['time'] = df['time'].astype(int)  # UNIX timestamp
-
+    df['time'] = df['time'] + 19800
     # Ensure numeric data
     for col in ['open', 'high', 'low', 'close']:
         df[col] = pd.to_numeric(df[col], errors='coerce')

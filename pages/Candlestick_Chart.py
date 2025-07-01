@@ -13,7 +13,7 @@ st.set_page_config(layout="wide")
 symbol = st.query_params.get('symbol', None)
 df = fetch_option_chain()
 all_symbols = sorted(df["symbol"].unique())
-# symbol = st.selectbox("Select Symbol", all_symbols, default=symbol if symbol else all_symbols[0])
+symbol = st.selectbox("Select Symbol", all_symbols, index = 0 if symbol is None else all_symbols.index(symbol))
 st.write(f"## Candlestick for {symbol}")
 
 # --- Interval Selection ---
@@ -30,10 +30,19 @@ response = requests.get(url)
 
 ohlc = response.json()["result"]
 df = pd.DataFrame(ohlc)
-st.dataframe(df)
+debug_data = df.copy()
 try:
     render_graph(df, interval)
 except Exception as e:
     # st.error(f"Error rendering graph: {e}")
     st.error("Please check the symbol, Maybe it doesnt have data for this duration or try again.")
     st.stop()
+
+with st.expander("Debug Info", expanded=False):
+    st.write(f"Symbol: {symbol}")
+    st.write(f"Interval: {interval}")
+    st.write(f"Data Points: {len(df)}")
+    debug_data['time'] = pd.to_datetime(debug_data['time'], unit='s', utc=True)
+    debug_data['time'] = debug_data['time'].dt.tz_convert('Asia/Kolkata')
+    debug_data['time'] = debug_data['time'].dt.strftime('%Y-%m-%d %H:%M:%S')
+    st.dataframe(debug_data)  # Display the data in JSON format for debugging

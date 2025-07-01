@@ -1,65 +1,74 @@
 import streamlit as st
 import requests
-from streamlit_lightweight_charts import renderLightweightCharts
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-
 import pandas as pd
+from datetime import datetime
+import streamlit.components.v1 as components
+import json
 
-# Get symbol from query params (since Streamlit v1.10+ and in latest cloud versions)
-symbol = st.experimental_get_query_params().get('symbol', [''])[0]
+# --- Setup ---
+st.set_page_config(layout="wide")
+symbol = st.experimental_get_query_params().get('symbol', ['BTCUSDT'])[0]
 st.write(f"## Candlestick for {symbol}")
 
-# Candlestick Duration Dropdown
+# --- Interval Selection ---
 duration_mapping = {
     "5 Minute": "5m", "15 Minute": "15m", "1 Hour": "1h"
 }
 duration_label = st.selectbox("Select Duration", list(duration_mapping.keys()))
 interval = duration_mapping[duration_label]
 
-# Fetch candlestick data from Delta Exchange API
-url = f"https://api.india.delta.exchange/v2/history/candles?resolution={interval}&symbol={symbol}&start=1719300782&end=1751364793"
-# url = f"https://api.delta.exchange/v2/candles/history?symbol={symbol}&resolution={interval}&limit=100"
+# --- Fetch Candle Data ---
+current_ts = int(datetime.now().timestamp())
+url = f"https://api.india.delta.exchange/v2/history/candles?resolution={interval}&symbol={symbol}&start=1719300782&end={current_ts}"
 response = requests.get(url)
-print(url)
+
 ohlc = response.json()["result"]
-#  Suppose ohlc is a list of dicts from the API.
 df = pd.DataFrame(ohlc)
 
+# --- Process Data ---
+df['time'] = pd.to_datetime(df['time'])
+df = df.sort_values('time')
+df['time'] = df['time'].astype(int)  # UNIX timestamp
 
-# --- Assume your DataFrame is named df ---
-# Required columns: 'time' (as POSIX/UNIX seconds), 'open', 'high', 'low', 'close'
-# If time is not already datetime, convert:
-if not pd.api.types.is_datetime64_any_dtype(df['time']):
-    df['time'] = pd.to_datetime(df['time'], unit='s')
-
-# Ensure numeric columns
+# Ensure numeric data
 for col in ['open', 'high', 'low', 'close']:
     df[col] = pd.to_numeric(df[col], errors='coerce')
 
-# --- Candlestick plotting ---
-fig, ax = plt.subplots(figsize=(16, 6))
- # width in days for the candlestick rectangle, adjust if needed
-width = 15 / 1440  # days
+# --- Convert to JS-friendly data format ---
+candles = df[['time', 'open', 'high', 'low', 'close']].to_dict(orient='records')
+js_data = json.dumps(candles)
+seconds_visible = "true" if interval in ["1m", "3m", "5m", "15m"] else "false"
+# --- Streamlit Debug View ---
 
-for idx, row in df.iterrows():
-    color = 'green' if row['close'] >= row['open'] else 'red'
-    # Wick
-    ax.plot([row['time'], row['time']], [row['low'], row['high']], color='black', linewidth=1)
-    # Candle body
-    rect = plt.Rectangle(
-        (mdates.date2num(row['time']) - width/2, min(row['open'], row['close'])),
-        width,
-        abs(row['close'] - row['open']),
-        color=color
-    )
-    ax.add_patch(rect)
+components.html(f"""
+<div id="container" style="width: 100%; height: 500px;"></div>
+<script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+    const chart = LightweightCharts.createChart(document.getElementById('container'), {{
+        layout: {{
+            background: {{ type: 'solid', color: 'white' }},
+            textColor: 'black'
+        }},
+        width: window.innerWidth * 0.9,
+        height: 500,
+        timeScale: {{
+            timeVisible: true,
+            secondsVisible: {seconds_visible}
+        }}
+    }});
 
-ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M'))
-plt.xticks(rotation=45)
-ax.set_title('Candlestick Chart')
-ax.set_xlabel('Time')
-ax.set_ylabel('Price')
-plt.tight_layout()
+    const candlestickSeries = chart.addSeries(LightweightCharts.CandlestickSeries,{{
+        upColor: '#26a69a',
+        downColor: '#ef5350',
+        borderVisible: false,
+        wickUpColor: '#26a69a',
+        wickDownColor: '#ef5350'
+    }});
 
-st.pyplot(fig)
+    candlestickSeries.setData({js_data});
+    chart.timeScale().fitContent();
+    
+
+    
+</script>
+""", height=550)

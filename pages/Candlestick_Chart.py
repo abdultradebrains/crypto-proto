@@ -4,6 +4,8 @@ import pandas as pd
 from datetime import datetime
 import streamlit.components.v1 as components
 import json
+from streamlit_autorefresh import st_autorefresh
+st_autorefresh(interval=300000, key="refresh")  # every 5 minutes
 
 # --- Setup ---
 st.set_page_config(layout="wide")

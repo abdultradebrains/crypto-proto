@@ -5,12 +5,15 @@ from datetime import datetime
 import streamlit.components.v1 as components
 import json
 from streamlit_autorefresh import st_autorefresh
-from utils import render_graph
+from utils import render_graph, fetch_option_chain
 st_autorefresh(interval=300000, key="refresh")  # every 5 minutes
 
 # --- Setup ---
 st.set_page_config(layout="wide")
-symbol = st.query_params.get('symbol', ['BTCUSDT'])
+symbol = st.query_params.get('symbol', None)
+df = fetch_option_chain()
+all_symbols = sorted(df["symbol"].unique())
+# symbol = st.selectbox("Select Symbol", all_symbols, default=symbol if symbol else all_symbols[0])
 st.write(f"## Candlestick for {symbol}")
 
 # --- Interval Selection ---
@@ -27,6 +30,7 @@ response = requests.get(url)
 
 ohlc = response.json()["result"]
 df = pd.DataFrame(ohlc)
+st.dataframe(df)
 try:
     render_graph(df, interval)
 except Exception as e:

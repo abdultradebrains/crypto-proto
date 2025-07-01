@@ -2,6 +2,25 @@ import pandas as pd
 import json
 import streamlit.components.v1 as components
 from datetime import datetime
+import streamlit as st
+import requests
+@st.cache_data(ttl=3600)
+def fetch_option_chain():
+    url = "https://api.india.delta.exchange/v2/products?contract_types=call_options,put_options&states=expired,live,upcoming"
+    r = requests.get(url)
+    if r.ok:
+        api_data = r.json()
+        products = api_data.get("result", [])
+        df = pd.json_normalize(products)
+        df = df[[
+            "id", "symbol", "strike_price", "contract_type", "state",
+            "description", "maker_commission_rate", "taker_commission_rate",
+            "short_description","underlying_asset.symbol",'launch_time'
+        ]]
+        return df
+    else:
+        st.error("Failed to fetch data from Delta Exchange API.")
+        return pd.DataFrame()
 
 def render_graph(df,interval):
     # --- Process Data ---

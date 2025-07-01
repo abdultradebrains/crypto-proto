@@ -17,7 +17,7 @@ def fetch_option_chain():
         df = df[[
             "id", "symbol", "strike_price", "contract_type", "state",
             "description", "maker_commission_rate", "taker_commission_rate",
-            "short_description"
+            "short_description","underlying_asset.symbol",'launch_time'
         ]]
         return df
     else:
@@ -36,26 +36,25 @@ if not df.empty:
     # Unique values for filters
     all_symbols = sorted(df["symbol"].unique())
     all_contract_types = sorted(df["contract_type"].unique())
-    all_strikes = sorted(df["strike_price"].unique())
-
+    all_spots = sorted(df["underlying_asset.symbol"].unique())
+    all_status = sorted(df["state"].unique())
     # Sidebar filters
     st.sidebar.header("Filter Options")
 
     search_text = st.sidebar.text_input("Search Symbol", "")
-    # selected_symbols = st.sidebar.multiselect("Select Symbol(s)", all_symbols, default=all_symbols)
+    selected_status = st.sidebar.multiselect("Select Status", all_status, default=all_status)
     selected_types = st.sidebar.multiselect("Contract Type", all_contract_types, default=all_contract_types)
-    selected_strikes = st.sidebar.multiselect("Strike Price", all_strikes, default=all_strikes)
+    selected_spots = st.sidebar.multiselect("Underlying Asset", all_spots, default=all_spots)
 
     # Apply filters on DataFrame
     filtered_df = df[
-        # df["symbol"].isin(selected_symbols) &
+        df["state"].isin(selected_status) &
         df["contract_type"].isin(selected_types) &
-        df["strike_price"].isin(selected_strikes)
+        df["underlying_asset.symbol"].isin(selected_spots) 
     ]
 
     if search_text:
-        filtered_df = filtered_df[filtered_df["symbol"].str.contains(search_text, case=False)]
-
+        filtered_df = filtered_df[filtered_df["symbol"].str.contains(search_text, case=False)].order_by('launch_time', ascending=False)
     st.subheader(f"Filtered Options: {len(filtered_df)} results")
     show_option_chain(filtered_df)
 else:

@@ -13,7 +13,12 @@ st.set_page_config(layout="wide")
 symbol = st.query_params.get('symbol', None)
 df = fetch_option_chain()
 all_symbols = sorted(df["symbol"].unique())
-symbol = st.selectbox("Select Symbol", all_symbols, index = 0 if symbol is None else all_symbols.index(symbol))
+col1, col2 = st.columns(2)
+with col1:
+    symbol = st.selectbox("Select Symbol", all_symbols, index = 0 if symbol is None else all_symbols.index(symbol))
+with col2:
+    type = st.selectbox("Select Type", ["Trade", "Mark"], index=1)
+symbol= "MARK:"+symbol if type == "Mark" else symbol
 st.write(f"## Candlestick for {symbol}")
 
 # --- Interval Selection ---

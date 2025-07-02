@@ -5,3 +5,4 @@ plotly
 streamlit-lightweight-charts
 matplotlib
 streamlit-autorefresh
+websockets

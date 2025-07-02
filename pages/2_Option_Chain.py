@@ -13,17 +13,13 @@ st.set_page_config(
 st.title("Option Chain data")
 
 df = fetch_option_chain()
+debug_df = df.copy()
 df= df[['greeks.delta', 'greeks.gamma', 'greeks.vega', 'greeks.theta', 'greeks.rho','oi',
         'oi_change_usd_6h','open', 'high', 'low', 'close', 'volume',
         'strike_price',  'contract_type','symbol']]
 process_raw_options_data(df)
 
-# df_grouped = df.groupby('strike_price')
-# def show_option_chain(df):
-#     for strike_price, group in df_grouped:
-#         st.subheader(f"Strike Price: {strike_price}")
-#         st.dataframe(group)
-# show_option_chain(df_grouped)
+
 def display_options_data():
     st.title("Real-time Options Chain")
     # Create a list of dictionaries for display in Streamlit table
@@ -54,4 +50,4 @@ def display_options_data():
 display_options_data()
 with st.expander("Debug Info", expanded=False):
     st.write(f"Symbol: BTC")
-    st.dataframe(df)
+    st.dataframe(debug_df)

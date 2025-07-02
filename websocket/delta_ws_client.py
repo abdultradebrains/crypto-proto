@@ -16,7 +16,12 @@ def push_snapshot(chain_data):
     # Assume chain_data includes "symbol" and "expiry_date"
     if isinstance(chain_data, dict):
         key = f"opt_chain:{chain_data['symbol']}"
-        r.set(key, json.dumps(chain_data))
+        pipe = r.pipeline()
+        data=json.dumps(chain_data)
+        pipe.set(key, data)
+        pipe.publish(key, data)
+        pipe.execute()
+
 # In your message receiver/loop, call `push_snapshot(data)`
 class DeltaOptionsWebSocketClient:
     def __init__(self, symbols, result_queue):

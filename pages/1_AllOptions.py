@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import pandas as pd
 from datetime import datetime, timedelta
-from utils import fetch_option_chain
+from utils import fetch_option_chain_list
 st.set_page_config(page_title="Option Chain Visualization", layout="wide")
 st.title("Option Chain Visualization")
 
@@ -12,7 +12,7 @@ def show_option_chain(df):
         st.markdown(f"- [{symbol}](./Candlestick_Chart?symbol={symbol})")
 
 # Fetch and cache API data (refreshes every 1 hour)
-df = fetch_option_chain()
+df = fetch_option_chain_list()
 
 if not df.empty:
     # Unique values for filters

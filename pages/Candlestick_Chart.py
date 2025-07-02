@@ -5,13 +5,13 @@ from datetime import datetime
 import streamlit.components.v1 as components
 import json
 from streamlit_autorefresh import st_autorefresh
-from utils import render_graph, fetch_option_chain
+from utils import render_graph, fetch_option_chain_list
 st_autorefresh(interval=300000, key="refresh")  # every 5 minutes
 
 # --- Setup ---
 st.set_page_config(layout="wide")
 symbol = st.query_params.get('symbol', None)
-df = fetch_option_chain()
+df = fetch_option_chain_list()
 all_symbols = sorted(df["symbol"].unique())
 col1, col2 = st.columns(2)
 with col1:

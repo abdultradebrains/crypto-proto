@@ -5,7 +5,7 @@ from datetime import datetime
 import streamlit as st
 import requests
 @st.cache_data(ttl=3600)
-def fetch_option_chain():
+def fetch_option_chain_list():
     url = "https://api.india.delta.exchange/v2/products?contract_types=call_options,put_options&states=expired,live,upcoming"
     r = requests.get(url)
     if r.ok:
@@ -21,7 +21,21 @@ def fetch_option_chain():
     else:
         st.error("Failed to fetch data from Delta Exchange API.")
         return pd.DataFrame()
-
+    
+def fetch_option_chain(asset="BTC",date="02-07-2025"):
+    url=f"https://api.india.delta.exchange/v2/tickers?contract_types=call_options,put_options&underlying_asset_symbols={asset}&expiry_date={date}"
+    r = requests.get(url)
+    if r.ok:
+        api_data = r.json()
+        tickers = api_data.get("result", [])
+        df = pd.json_normalize(tickers)
+        df = df.drop(columns=['initial_margin','tags','tick_size','turnover','turnover_symbol',])
+        # df['time'] = pd.to_datetime(df['expiry_date'])
+        return df
+    else:
+        st.error("Failed to fetch data from Delta Exchange API.")
+        return pd.DataFrame()
+    
 def render_graph(df,interval):
     # --- Process Data ---
     df['time'] = pd.to_datetime(df['time'])

@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-from websocket.runner import result_queue as queue  # Import the shared queue from the WebSocket runner
 # Set up manager with your client
 
 
@@ -31,7 +30,7 @@ def apply_incoming_data():
     
     try:
         while True:  # Drain the queue
-            data = queue.get_nowait()
+            data = {}
             print(f"Received new data of size {len(str(data))}")
             # Filter and convert to DataFrame as in previous code
             df = pd.DataFrame(data['chains'])  # adapt key if needed

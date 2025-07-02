@@ -15,7 +15,7 @@ r = redis.Redis(
 def push_snapshot(chain_data):
     # Assume chain_data includes "symbol" and "expiry_date"
     if isinstance(chain_data, dict):
-        key = f"{chain_data['symbol']}"
+        key = f"opt_chain:{chain_data['symbol']}"
         r.set(key, json.dumps(chain_data))
 # In your message receiver/loop, call `push_snapshot(data)`
 class DeltaOptionsWebSocketClient:

@@ -21,7 +21,6 @@ process_raw_options_data(df)
 
 
 def display_options_data():
-    st.title("Real-time Options Chain")
     # Create a list of dictionaries for display in Streamlit table
     display_data = []
     for strike, data in st.session_state.options_data_by_strike.items():

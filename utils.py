@@ -84,3 +84,23 @@ def render_graph(df,interval):
         
     </script>
     """, height=550)
+
+
+def process_raw_options_data(df: pd.DataFrame):
+    """
+    Processes the raw DataFrame to merge call and put options by strike price.
+    """
+    for index, row in df.iterrows():
+        strike_price = row['strike_price']
+        contract_type = row['contract_type']
+        if contract_type == 'call_options':
+            st.session_state.options_data_by_strike[strike_price]["call_data"] = row.to_dict()
+        elif contract_type == 'put_options':
+            st.session_state.options_data_by_strike[strike_price]["put_data"] = row.to_dict()
+    # You can add calculations here as well
+    for strike, data in st.session_state.options_data_by_strike.items():
+        call_greeks_delta = data["call_data"].get("greeks_delta", 0)
+        put_greeks_delta = data["put_data"].get("greeks_delta", 0)
+        # Example calculation: sum of deltas
+        data["combined_delta"] = call_greeks_delta + put_greeks_delta
+    return data

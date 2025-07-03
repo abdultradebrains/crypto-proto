@@ -9,17 +9,17 @@ const FIELD_GROUPS = [
     label: "Calls",
     fields: [
       { label: "Delta", value: "greeks.delta" },
-      { label: "Gamma", value: "greeks.gamma" },
-      { label: "Vega", value: "greeks.vega" },
+      // { label: "Gamma", value: "greeks.gamma" },
+      // { label: "Vega", value: "greeks.vega" },
       { label: "Theta", value: "greeks.theta" },
-      { label: "Rho", value: "greeks.rho" },
+      // { label: "Rho", value: "greeks.rho" },
       { label: "Spot", value: "greeks.spot" },
       { label: "Bid", value: "quotes.best_bid" },
       { label: "Bid Size", value: "quotes.bid_size" },
       { label: "Ask", value: "quotes.best_ask" },
       { label: "Ask Size", value: "quotes.ask_size" },
       { label: "Mark", value: "mark_price" },
-      { label: "Mark IV", value: "quotes.mark_iv" },
+      // { label: "Mark IV", value: "quotes.mark_iv" },
       { label: "Mark Chg 24h", value: "mark_change_24h" },
       { label: "OI", value: "oi" }
     ]
@@ -29,7 +29,7 @@ const FIELD_GROUPS = [
     label: "Central",
     fields: [
       { label: "Strike", value: "strike_price" },
-      { label: "Expiry", value: "expiry" }
+      { label: "Symbol", value: "symbol" }
     ]
   },
   {
@@ -42,12 +42,12 @@ const FIELD_GROUPS = [
       { label: "Ask", value: "quotes.best_ask" },
       { label: "Ask Size", value: "quotes.ask_size" },
       { label: "Mark", value: "mark_price" },
-      { label: "Mark IV", value: "quotes.mark_iv" },
+      // { label: "Mark IV", value: "quotes.mark_iv" },
       { label: "Delta", value: "greeks.delta" },
-      { label: "Gamma", value: "greeks.gamma" },
-      { label: "Vega", value: "greeks.vega" },
+      // { label: "Gamma", value: "greeks.gamma" },
+      // { label: "Vega", value: "greeks.vega" },
       { label: "Theta", value: "greeks.theta" },
-      { label: "Rho", value: "greeks.rho" }
+      // { label: "Rho", value: "greeks.rho" }
     ]
   }
 ];

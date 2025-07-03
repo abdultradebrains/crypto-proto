@@ -142,10 +142,12 @@ def main():
     
     table_placeholder = st.empty()
 
-    while True:
-        process_queue_and_update_state()
-        render_table_in_placeholder(asset_f, expiry_f, table_placeholder)
-        time.sleep(0.1)
+    # Streamlit safe loop with auto-refresh
+    process_queue_and_update_state()
+    render_table_in_placeholder(asset_f, expiry_f, table_placeholder)
 
+    # Auto-refresh every N seconds (e.g. 2 seconds)
+    time.sleep(2)
+    st.experimental_rerun()
 if __name__ == "__main__":
     main()

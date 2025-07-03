@@ -1,0 +1,49 @@
+.options-table {
+    width: 100%;
+}
+
+.options-row {
+    display: flex;
+    margin-bottom: 2px;
+}
+
+.table-header {
+    font-weight: bold;
+    background: #222;
+}
+
+.cell {
+    min-width: 80px;
+    padding: 2px 6px;
+    text-align: right;
+    border-right: 1px solid #222;
+}
+
+.cell.strike {
+    background: #333;
+    font-weight: bold;
+    color: #cfa;
+    text-align: center;
+    border-right: 2px solid #555;
+}
+
+.cell.call {
+    color: #72e87b;
+}
+
+.cell.put {
+    color: #f47599;
+}
+
+.options-row:not(.table-header):hover {
+    background: #191c25;
+}
+
+.filter-tabs {
+    margin: 1em 0;
+}
+
+button.active {
+    background: #191c25;
+    color: #ffaa00;
+}

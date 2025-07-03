@@ -5,7 +5,7 @@ services:
     ports:
       - "6379:6379"
     restart: unless-stopped
-    
+
   streamlit:
     build: .  # path to your Streamlit Dockerfile
     ports:
@@ -15,3 +15,20 @@ services:
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+
+  api_gateway:
+    build: ./api
+    restart: unless-stopped
+    ports:
+      - "8000:8000" # Expose the gateway port
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+  frontend:
+    build: ./options-ui
+    restart: unless-stopped
+    ports:
+      - "3000:3000" # Expose the React app port
+    depends_on:
+      - api_gateway

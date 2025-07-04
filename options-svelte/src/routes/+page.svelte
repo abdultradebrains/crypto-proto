@@ -3,9 +3,9 @@
 
 <script>
 	import { onMount } from 'svelte';
-	import { optionsData, connectWebSocket } from '$lib/websocket-store.js';
-	import FilterControls from '$lib/components/FilterControls.svelte';
-	import OptionsTable from '$lib/components/OptionsTable.svelte';
+	import { optionsData, connectWebSocket } from '../lib/websocket-store.js';
+	import FilterControls from '../lib/components/FilterControls.svelte';
+	import OptionsTable from '../lib/components/OptionsTable.svelte';
 
 	onMount(() => {
 		// Define the subscription message for the delta.exchange API

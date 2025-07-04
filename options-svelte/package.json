@@ -25,6 +25,7 @@
 		"@storybook/addon-vitest": "^9.0.15",
 		"@storybook/sveltekit": "^9.0.15",
 		"@sveltejs/adapter-auto": "^6.0.0",
+		"@sveltejs/adapter-node": "^5.2.12",
 		"@sveltejs/kit": "^2.16.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"@tailwindcss/vite": "^4.0.0",

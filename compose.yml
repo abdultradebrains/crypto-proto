@@ -32,3 +32,13 @@ services:
       - "3000:3000" # Expose the React app port
     depends_on:
       - api_gateway
+    # Updated Frontend Service for SvelteKit
+  svelte-frontend:
+    build:
+      context: ./options-svelte  # Assumed path to your SvelteKit app
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3550:3550" # Expose the SvelteKit app port
+    depends_on:
+      - api_gateway

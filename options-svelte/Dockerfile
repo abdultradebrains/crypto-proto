@@ -20,7 +20,7 @@ RUN npm run build
 FROM base AS runner
 ENV NODE_ENV=production
 # Copy built assets and necessary files
-COPY --from=builder /app/build ./build
+COPY --from=builder --chown=node:node /app/build ./build
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.svelte-kit ./.svelte-kit
 COPY package.json .

@@ -9,7 +9,7 @@ services:
   streamlit:
     build: .  # path to your Streamlit Dockerfile
     ports:
-      - "8501:8501"
+      - "8555:8501"
     depends_on:
       - redis
     environment:
@@ -20,7 +20,7 @@ services:
     build: ./api
     restart: unless-stopped
     ports:
-      - "8000:8000" # Expose the gateway port
+      - "8556:8000" # Expose the gateway port
     depends_on:
       - redis
     environment:

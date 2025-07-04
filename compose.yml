@@ -25,20 +25,20 @@ services:
       - redis
     environment:
       - REDIS_HOST=redis
-  frontend:
-    build: ./options-ui
-    restart: unless-stopped
-    ports:
-      - "3560:3000" # Expose the React app port
-    depends_on:
-      - api_gateway
-    # Updated Frontend Service for SvelteKit
-  # svelte-frontend:
-  #   build:
-  #     context: ./options-svelte  # Assumed path to your SvelteKit app
-  #     dockerfile: Dockerfile
+  # frontend:
+  #   build: ./options-ui
   #   restart: unless-stopped
   #   ports:
-  #     - "3550:3000" # Expose the SvelteKit app port
+  #     - "3560:3000" # Expose the React app port
   #   depends_on:
   #     - api_gateway
+  #   # Updated Frontend Service for SvelteKit
+  svelte-frontend:
+    build:
+      context: ./options-svelte  # Assumed path to your SvelteKit app
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3550:3000" # Expose the SvelteKit app port
+    depends_on:
+      - api_gateway

@@ -1,20 +1,32 @@
-FROM python:3.10-slim
+# Dockerfile for SvelteKit Application
 
+# ---- Base Node ----
+FROM node:22-alpine AS base
 WORKDIR /app
 
-# Install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# ---- Dependencies ----
+FROM base AS deps
+COPY package.json package-lock.json* ./
+RUN npm install
 
-# Copy app code
+# ---- Builder ----
+FROM base AS builder
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# Build the SvelteKit app
+RUN npm run build
 
-# Expose port (default for Streamlit, but let Coolify override)
-EXPOSE 8501
+# ---- Runner ----
+FROM base AS runner
+ENV NODE_ENV=production
+# Copy built assets and necessary files
+COPY --from=builder --chown=node:node /app/build ./build
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.svelte-kit ./.svelte-kit
+COPY package.json .
 
-# Copy start script
-COPY start.sh .
-RUN chmod +x start.sh
+# Expose the port the app will run on
+EXPOSE 3000
 
-# Use shell script as entrypoint
-CMD ["./start.sh"]
+# The command to start the Node.js server produced by adapter-node
+CMD ["node", "build"]

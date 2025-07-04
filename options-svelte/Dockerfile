@@ -25,7 +25,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY package.json .
 
 # Expose the port the app will run on
-EXPOSE 3550
+EXPOSE 3000
 
 # The command to start the Node.js server produced by adapter-node
 CMD ["node", "build"]

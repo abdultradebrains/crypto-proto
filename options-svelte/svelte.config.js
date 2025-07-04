@@ -4,6 +4,13 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
+	preview: {
+		port: 3000,
+	},
+	// for dev
+	server: {
+		port: 3000,
+	},
 	// Consult https://svelte.dev/docs/kit/integrations
 	// for more information about preprocessors
 	preprocess: [vitePreprocess(), mdsvex()],
@@ -13,7 +20,7 @@ const config = {
 		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
 		adapter: adapter()
 	},
+
 	extensions: ['.svelte', '.svx']
 };
-
 export default config;

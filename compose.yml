@@ -29,7 +29,7 @@ services:
     build: ./options-ui
     restart: unless-stopped
     ports:
-      - "3000:3000" # Expose the React app port
+      - "3560:3000" # Expose the React app port
     depends_on:
       - api_gateway
     # Updated Frontend Service for SvelteKit
@@ -39,6 +39,6 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "3550:3550" # Expose the SvelteKit app port
+      - "3550:3000" # Expose the SvelteKit app port
     depends_on:
       - api_gateway
